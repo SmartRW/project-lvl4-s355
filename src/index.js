@@ -1,10 +1,9 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
+import gon from 'gon';
+import app from './App.jsx';
 import '../assets/application.css';
 
-// import faker from 'faker';
-// import gon from 'gon';
-// import cookies from 'js-cookie';
-// import io from 'socket.io-client';
+app(gon);
 
 if (process.env.NODE_ENV !== 'production') {
   localStorage.debug = 'chat:*';
