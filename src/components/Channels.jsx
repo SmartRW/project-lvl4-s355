@@ -1,13 +1,13 @@
 import React from 'react';
 
 const Channels = ({ channels }) => (
-  <ul className="list-group">
+  <div className="list-group col-md-3">
     {channels.map(c => (
-      <li key={c.id} className="list-group-item">
+      <button key={c.id} className="list-group-item list-group-item-action">
         {c.name}
-      </li>
+      </button>
     ))}
-  </ul>
+  </div>
 );
 
 export default Channels;
