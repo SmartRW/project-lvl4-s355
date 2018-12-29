@@ -1,2 +1,1 @@
-release: make build
-server: make start
+web: make start
