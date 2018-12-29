@@ -1,2 +1,2 @@
 release: make build
-web: node ./dist/index.js
+web: node ./dist/bin/slack.js
