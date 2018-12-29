@@ -1,1 +1,1 @@
-web: make start
+release: make build
