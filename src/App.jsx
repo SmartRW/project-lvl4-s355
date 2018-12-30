@@ -4,7 +4,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import ChannelsContainer from './containers/Channels';
+import Channels from './components/Channels';
 
 // import io from 'socket.io-client';
 
@@ -26,7 +26,7 @@ export default (data) => {
 
   render(
     <Provider store={store}>
-      <ChannelsContainer />
+      <Channels />
     </Provider>,
     document.querySelector('.container'),
   );
