@@ -1,22 +1,33 @@
 import React from 'react';
 import connect from '../connect';
 
-const mapStateToProps = ({ channels }) => ({ channels });
+const mapStateToProps = ({ currentChannelId, messages, users }) => ({
+  currentChannelId,
+  messages,
+  users,
+});
 
 @connect(mapStateToProps)
-class Channels extends React.Component {
+class Chat extends React.Component {
   render = () => {
-    const { channels } = this.props;
+    const { currentChannelId, messages, users } = this.props;
+
     return (
-      <div className="list-group col-md-3">
-        {channels.map(c => (
-          <button key={c.id} className="list-group-item list-group-item-action" type="button">
-            {c.name}
-          </button>
-        ))}
+      <div className="list-group p-0">
+        {messages
+          .filter(message => message.channelId === currentChannelId)
+          .map(message => (
+            <div key={message.id} className="list-group-item pt-1 pb-1 pl-2 pl-3 border-0">
+              <div className="font-weight-bold">
+                {users.find(user => user.id === message.userId).name}
+              </div>
+              <div>{message.text}</div>
+            </div>
+          ))
+        }
       </div>
     );
   }
 }
 
-export default Channels;
+export default Chat;
