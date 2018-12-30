@@ -26,7 +26,10 @@ export default (data) => {
 
   render(
     <Provider store={store}>
-      <Channels />
+      <div className="row min-vh-50">
+        <Channels />
+        <div className="col-md-9 bg-light text-dark" />
+      </div>
     </Provider>,
     document.querySelector('.container'),
   );
