@@ -13,7 +13,7 @@ class Chat extends React.Component {
     const { currentChannelId, messages, users } = this.props;
 
     return (
-      <div className="list-group p-0">
+      <div className="list-group p-2 mb-2 overflow-auto border rounded" style={{ minHeight: 500 }}>
         {messages
           .filter(message => message.channelId === currentChannelId)
           .map(message => (
