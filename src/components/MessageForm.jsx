@@ -35,7 +35,7 @@ class MessageForm extends React.Component {
         <div className="form-group">
           <Field className="form-control" required name="message" component="input" type="text" disabled={disabled} />
           {messageAddingStage === 'failed'
-            ? <small className="form-text text-muted">Network error</small>
+            ? <small className="form-text text-mute text-danger">Network error</small>
             : null}
         </div>
         <button className="btn btn-primary ml-auto" disabled={disabled} type="submit">Send</button>

@@ -36,7 +36,7 @@ class Chat extends React.Component {
           .filter(message => message.channelId === currentChannelId)
           .reverse()
           .map(({ message, id, userName }) => (
-            <div key={id} className="list-group-item pt-1 pb-1 pl-2 pl-3 border-0">
+            <div key={id} className="list-group-item pt-1 pb-1 pl-2 pl-3 border-0 bg-transparent">
               {getNickname(userName, currentUser)}
               <span>{message}</span>
             </div>
