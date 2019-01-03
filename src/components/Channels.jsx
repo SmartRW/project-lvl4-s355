@@ -6,6 +6,11 @@ const mapStateToProps = ({ channels, currentChannelId }) => ({ channels, current
 
 @connect(mapStateToProps)
 class Channels extends React.Component {
+  onClick = id => () => {
+    const { switchCurrentChannelId } = this.props;
+    switchCurrentChannelId({ newChannelId: id });
+  }
+
   render = () => {
     const { channels, currentChannelId } = this.props;
     const channelClasses = {
@@ -40,6 +45,7 @@ class Channels extends React.Component {
               ? currentChannelClasses
               : channelClasses)}
             type="button"
+            onClick={this.onClick(c.id)}
           >
             {`# ${c.name}`}
           </button>

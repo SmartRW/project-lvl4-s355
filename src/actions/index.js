@@ -26,4 +26,4 @@ export const addMessage = ({ message, channelId, currentUser }) => (dispatch) =>
   // }
 };
 
-export const makeTest = createAction('MAKE_TEST');
+export const switchCurrentChannelId = createAction('CHANNEL_SWITCH');
