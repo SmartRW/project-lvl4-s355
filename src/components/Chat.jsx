@@ -31,18 +31,18 @@ class Chat extends React.Component {
     const { currentChannelId, messages, currentUser } = this.props;
 
     return (
-      <div className="d-flex flex-column-reverse list-group p-2 mb-2 overflow-auto border rounded overflow-auto" style={{ height: 500 }} scrolltop="-10000">
+      <ul className="d-flex flex-column-reverse list-group p-2 mb-2 overflow-auto border rounded overflow-auto" style={{ height: 500 }} scrolltop="-10000">
         {messages
           .filter(message => message.channelId === currentChannelId)
           .reverse()
           .map(({ message, id, userName }) => (
-            <div key={id} className="list-group-item pt-1 pb-1 pl-2 pl-3 border-0 bg-transparent">
+            <li key={id} className="list-group-item pt-1 pb-1 pl-2 pl-3 border-0 bg-transparent">
               {getNickname(userName, currentUser)}
               <span>{message}</span>
-            </div>
+            </li>
           ))
         }
-      </div>
+      </ul>
     );
   }
 }
