@@ -10,6 +10,11 @@ const mapStateToProps = ({ messageAddingStage, currentChannelId, currentUser }) 
 
 @connect(mapStateToProps)
 class MessageForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.messageInput = React.createRef();
+  }
+
   addMessage = ({ message }) => {
     const {
       reset,
@@ -24,7 +29,10 @@ class MessageForm extends React.Component {
           reset();
         }
       });
+    this.messageInput.current.focus();
   }
+
+  renderInput = field => <input {...field.input} className="form-control" required type="text" ref={this.messageInput} />;
 
   render = () => {
     const { handleSubmit, messageAddingStage } = this.props;
@@ -33,7 +41,7 @@ class MessageForm extends React.Component {
     return (
       <form className="form d-flex flex-column" onSubmit={handleSubmit(this.addMessage)}>
         <div className="form-group">
-          <Field className="form-control" required name="message" component="input" type="text" disabled={disabled} />
+          <Field component={this.renderInput} name="message" />
           {messageAddingStage === 'failed'
             ? <small className="form-text text-mute text-danger">Network error</small>
             : null}
