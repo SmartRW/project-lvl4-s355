@@ -10,8 +10,8 @@ import reducers from './reducers';
 import Root from './components/Root';
 
 // eslint-disable-next-line no-underscore-dangle
-// const ext = window.__REDUX_DEVTOOLS_EXTENSION__;
-// const devtoolsMiddleware = ext && ext();
+const ext = window.__REDUX_DEVTOOLS_EXTENSION__;
+const devtoolsMiddleware = ext && ext();
 
 export default (data) => {
   const getUserName = () => {
@@ -30,7 +30,7 @@ export default (data) => {
     initialState,
     compose(
       applyMiddleware(thunk),
-      // devtoolsMiddleware,
+      devtoolsMiddleware,
     ),
   );
   render(

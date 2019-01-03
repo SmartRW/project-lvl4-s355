@@ -17,13 +17,7 @@ export const addMessage = ({ message, channelId, currentUser }) => (dispatch) =>
       dispatch(addMessageFailure());
       console.error(e);
     });
-  // dispatch(addMessageRequest());
-  // try {
-  //   axios.post(url, { data });
-  //   dispatch(addMessageSuccess());
-  // } catch (e) {
-  //   dispatch(addMessageFailure());
-  // }
 };
 
 export const switchCurrentChannelId = createAction('CHANNEL_SWITCH');
+export const addChannel = createAction('CHANNEL_ADD');

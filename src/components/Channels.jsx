@@ -34,7 +34,7 @@ class Channels extends React.Component {
     };
 
     return (
-      <div className="list-group col-md-3 p-0 bg-info">
+      <div className="list-group mb-3">
         <div className={cn(channelClasses)}>
           Channels
         </div>
