@@ -35,7 +35,7 @@ class Channels extends React.Component {
     return (
       <div className="list-group mb-3">
         <div className={cn(channelClasses)}>
-          Channels
+          channels
         </div>
         {channels.map(c => (
           <button

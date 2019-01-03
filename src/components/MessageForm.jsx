@@ -46,7 +46,7 @@ class MessageForm extends React.Component {
             ? <small className="form-text text-mute text-danger">Network error</small>
             : null}
         </div>
-        <button className="btn btn-primary ml-auto" disabled={disabled} type="submit">Send</button>
+        <button className="btn btn-primary ml-auto" disabled={disabled} type="submit">send</button>
       </form>
     );
   }
