@@ -27,7 +27,7 @@ class ButtonAndModal extends React.Component {
     const { modalTitle, buttonName } = this.props;
     return (
       <>
-        <Button onClick={this.handleShow} variant="info" type="button" size="sm">
+        <Button className="border-0 rounded-0" onClick={this.handleShow} variant="info" type="button" size="sm">
           {buttonName}
         </Button>
 

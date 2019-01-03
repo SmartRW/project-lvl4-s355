@@ -9,7 +9,7 @@ const Root = () => (
     <div className="col-md-3 p-0 bg-info">
       <Channels />
       <div className="text-center">
-        <ButtonAndModal modalTitle="New channel" buttonName="+ add new channel" />
+        <ButtonAndModal modalTitle="new channel" buttonName="+ add new channel" />
       </div>
     </div>
     <div className="col-md-9 bg-light text-dark p-2">
