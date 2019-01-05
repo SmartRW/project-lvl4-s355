@@ -10,11 +10,10 @@ const messages = handleActions({
   ],
 }, []);
 
-const messageAddingStage = handleActions({
-  [actions.addMessageRequest]: () => 'requested',
-  [actions.addMessageSuccess]: () => 'successed',
-  [actions.addMessageFailure]: () => 'failed',
-}, 'none');
+const messageAddingSucceedeed = handleActions({
+  [actions.messageAddingSuccess]: () => true,
+  [actions.messageAddingFailure]: () => false,
+}, true);
 
 const currentChannelId = handleActions({
   [actions.switchCurrentChannelId]: (state, { payload: { newChannelId } }) => newChannelId,
@@ -25,6 +24,6 @@ export default combineReducers({
   messages,
   currentChannelId,
   currentUser: (state = {}) => state,
-  messageAddingStage,
+  messageAddingSucceedeed,
   form: formReducer,
 });

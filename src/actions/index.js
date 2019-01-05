@@ -4,20 +4,19 @@ import routes from '../utils/routes';
 
 export const updateMessages = createAction('MESSAGES_UPDATE');
 
-export const addMessageRequest = createAction('MESSAGE_ADD_REQUEST');
-export const addMessageSuccess = createAction('MESSAGE_ADD_SUCCESS');
-export const addMessageFailure = createAction('MESSAGE_ADD_FAILURE');
+export const messageAddingSuccess = createAction('MESSAGE_ADD_SUCCESS');
+export const messageAddingFailure = createAction('MESSAGE_ADD_FAILURE');
 
-export const addMessage = ({ message, channelId, currentUser }) => (dispatch) => {
-  dispatch(addMessageRequest());
+export const addMessage = ({ message, channelId, currentUser }) => async (dispatch) => {
   const url = routes.getMessagesUrl(channelId);
   const data = { type: 'messages', attributes: { message, userName: currentUser } };
-  return axios.post(url, { data })
-    .then(() => dispatch(addMessageSuccess()))
-    .catch((e) => {
-      dispatch(addMessageFailure());
-      console.error(e);
-    });
+  try {
+    await axios.post(url, { data });
+    dispatch(messageAddingSuccess());
+  } catch (e) {
+    dispatch(messageAddingFailure());
+    console.error(e);
+  }
 };
 
 export const switchCurrentChannelId = createAction('CHANNEL_SWITCH');

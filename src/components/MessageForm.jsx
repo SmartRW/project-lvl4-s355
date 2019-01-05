@@ -2,56 +2,53 @@ import React from 'react';
 import { Field, reduxForm } from 'redux-form';
 import connect from '../utils/connect';
 
-const mapStateToProps = ({ messageAddingStage, currentChannelId, currentUser }) => ({
-  messageAddingStage,
+const mapStateToProps = ({ messageAddingSucceedeed, currentChannelId, currentUser }) => ({
+  messageAddingSucceedeed,
   currentChannelId,
   currentUser,
 });
 
 @connect(mapStateToProps)
+@reduxForm({ form: 'newMessage' })
 class MessageForm extends React.Component {
   constructor(props) {
     super(props);
     this.messageInput = React.createRef();
   }
 
-  addMessage = ({ message }) => {
+  addMessage = async ({ message }) => {
     const {
       reset,
       currentChannelId,
       addMessage,
       currentUser,
     } = this.props;
-    addMessage({ channelId: currentChannelId, message, currentUser })
-      .then(() => {
-        const { messageAddingStage } = this.props;
-        if (messageAddingStage === 'successed') {
-          reset();
-        }
-      });
+    await addMessage({ channelId: currentChannelId, message, currentUser });
+    const { messageAddingSucceedeed } = this.props;
+    if (messageAddingSucceedeed) {
+      reset();
+    }
     this.messageInput.current.focus();
   }
 
-  renderInput = field => <input {...field.input} className="form-control" required type="text" ref={this.messageInput} />;
+  renderInput = (field) => {
+    const { submitting } = this.props;
+    return <input {...field.input} className="form-control" required type="text" ref={this.messageInput} disabled={submitting} />;
+  };
 
   render = () => {
-    const { handleSubmit, messageAddingStage } = this.props;
-    const disabled = messageAddingStage === 'requested';
+    const { handleSubmit, messageAddingSucceedeed, submitting } = this.props;
 
     return (
       <form className="form d-flex flex-column" onSubmit={handleSubmit(this.addMessage)}>
         <div className="form-group">
           <Field component={this.renderInput} name="message" />
-          {messageAddingStage === 'failed'
-            ? <small className="form-text text-mute text-danger">Network error</small>
-            : null}
+          {!messageAddingSucceedeed && <small className="form-text text-mute text-danger">Network error</small>}
         </div>
-        <button className="btn btn-primary ml-auto" disabled={disabled} type="submit">send</button>
+        <button className="btn btn-primary ml-auto" disabled={submitting} type="submit">send</button>
       </form>
     );
   }
 }
 
-export default reduxForm({
-  form: 'newMessage',
-})(MessageForm);
+export default MessageForm;
