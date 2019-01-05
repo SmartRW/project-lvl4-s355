@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from 'react-bootstrap/lib/Button';
 import Modal from 'react-bootstrap/lib/Modal';
-import connect from '../connect';
+import connect from '../utils/connect';
 
 const mapStateToProps = state => state;
 

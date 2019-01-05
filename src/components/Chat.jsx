@@ -1,6 +1,6 @@
 import React from 'react';
 import io from 'socket.io-client';
-import connect from '../connect';
+import connect from '../utils/connect';
 
 const mapStateToProps = ({ currentChannelId, messages, currentUser }) => ({
   currentChannelId,

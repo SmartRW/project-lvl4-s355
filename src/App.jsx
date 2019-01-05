@@ -13,16 +13,16 @@ import Root from './components/Root';
 const ext = window.__REDUX_DEVTOOLS_EXTENSION__;
 const devtoolsMiddleware = ext && ext();
 
-export default (data) => {
-  const getUserName = () => {
-    if (cookies.get('userName')) {
-      return cookies.get('userName');
-    }
-    const userName = faker.name.findName();
-    cookies.set('userName', userName);
-    return userName;
-  };
+const getUserName = () => {
+  if (cookies.get('userName')) {
+    return cookies.get('userName');
+  }
+  const userName = faker.name.findName();
+  cookies.set('userName', userName);
+  return userName;
+};
 
+export default (data) => {
   const initialState = { ...data, currentUser: getUserName() };
 
   const store = createStore(
