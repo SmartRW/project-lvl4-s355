@@ -26,27 +26,23 @@ class Channels extends React.Component {
       'bg-info': true,
     };
 
-    const currentChannelClasses = {
-      ...channelClasses,
-      disabled: true,
-      'font-weight-bold': true,
-    };
-
     return (
       <div className="list-group mb-3">
         <div className={cn(channelClasses)}>
           channels
         </div>
-        {channels.map(c => (
+        {channels.map(channel => (
           <button
-            key={c.id}
-            className={cn(c.id === currentChannelId
-              ? currentChannelClasses
-              : channelClasses)}
+            key={channel.id}
+            className={cn({
+              ...channelClasses,
+              'font-weight-bold': channel.id === currentChannelId,
+              disabled: channel.id === currentChannelId,
+            })}
             type="button"
-            onClick={this.onClick(c.id)}
+            onClick={this.onClick(channel.id)}
           >
-            {`# ${c.name}`}
+            {`# ${channel.name}`}
           </button>
         ))}
       </div>

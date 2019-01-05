@@ -33,7 +33,7 @@ class MessageForm extends React.Component {
 
   renderInput = (field) => {
     const { submitting } = this.props;
-    return <input {...field.input} className="form-control" required type="text" ref={this.messageInput} disabled={submitting} />;
+    return <input {...field.input} className="form-control" type="text" ref={this.messageInput} disabled={submitting} />;
   };
 
   render = () => {

@@ -8,14 +8,16 @@ export const messageAddingSuccess = createAction('MESSAGE_ADD_SUCCESS');
 export const messageAddingFailure = createAction('MESSAGE_ADD_FAILURE');
 
 export const addMessage = ({ message, channelId, currentUser }) => async (dispatch) => {
-  const url = routes.getMessagesUrl(channelId);
-  const data = { type: 'messages', attributes: { message, userName: currentUser } };
-  try {
-    await axios.post(url, { data });
-    dispatch(messageAddingSuccess());
-  } catch (e) {
-    dispatch(messageAddingFailure());
-    console.error(e);
+  if (message.trim() !== '') {
+    const url = routes.getMessagesUrl(channelId);
+    const data = { type: 'messages', attributes: { message: message.trim(), userName: currentUser } };
+    try {
+      await axios.post(url, { data });
+      dispatch(messageAddingSuccess());
+    } catch (e) {
+      dispatch(messageAddingFailure());
+      console.error(e);
+    }
   }
 };
 
