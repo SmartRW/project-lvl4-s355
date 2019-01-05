@@ -1,5 +1,6 @@
 import { createAction } from 'redux-actions';
 import axios from 'axios';
+import routes from '../utils/routes';
 
 export const updateMessages = createAction('MESSAGES_UPDATE');
 
@@ -9,7 +10,7 @@ export const addMessageFailure = createAction('MESSAGE_ADD_FAILURE');
 
 export const addMessage = ({ message, channelId, currentUser }) => (dispatch) => {
   dispatch(addMessageRequest());
-  const url = `/api/v1/channels/${channelId}/messages`;
+  const url = routes.getMessagesUrl(channelId);
   const data = { type: 'messages', attributes: { message, userName: currentUser } };
   return axios.post(url, { data })
     .then(() => dispatch(addMessageSuccess()))

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Field, reduxForm } from 'redux-form';
-import connect from '../connect';
+import connect from '../utils/connect';
 
 const mapStateToProps = ({ messageAddingStage, currentChannelId, currentUser }) => ({
   messageAddingStage,
