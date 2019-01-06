@@ -8,7 +8,7 @@ export const messageAddingSuccess = createAction('MESSAGE_ADD_SUCCESS');
 export const messageAddingFailure = createAction('MESSAGE_ADD_FAILURE');
 
 export const addMessage = ({ message, channelId, currentUser }) => async (dispatch) => {
-  if (message.trim() !== '') {
+  if (message && message.trim() !== '') {
     const url = routes.getMessagesUrl(channelId);
     const data = { type: 'messages', attributes: { message: message.trim(), userName: currentUser } };
     try {
@@ -22,4 +22,24 @@ export const addMessage = ({ message, channelId, currentUser }) => async (dispat
 };
 
 export const switchCurrentChannelId = createAction('CHANNEL_SWITCH');
-export const addChannel = createAction('CHANNEL_ADD');
+
+export const channelAddingSuccess = createAction('CHANNEL_ADD_SUCCESS');
+export const channelAddingFailure = createAction('CHANNEL_ADD_FAILURE');
+
+export const addChannel = ({ newChannelName, channels }) => async (dispatch) => {
+  const existingChannelNames = channels.map(channel => channel.name);
+  if (newChannelName && newChannelName.trim() !== '' && !existingChannelNames.includes(newChannelName.trim())) {
+    const url = routes.getChannelsUrl();
+    const data = { name: newChannelName };
+    try {
+      console.dir({ data });
+      await axios.post(url, { data });
+      dispatch(channelAddingSuccess());
+    } catch (e) {
+      dispatch(channelAddingFailure());
+      console.error(e);
+    }
+  } else {
+    dispatch(channelAddingFailure());
+  }
+};
