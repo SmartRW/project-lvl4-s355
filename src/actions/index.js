@@ -32,7 +32,6 @@ export const addChannel = ({ newChannelName, channels }) => async (dispatch) => 
     const url = routes.getChannelsUrl();
     const data = { attributes: { name: newChannelName } };
     try {
-      console.dir({ data });
       await axios.post(url, { data });
       dispatch(channelAddingSuccess());
     } catch (e) {
