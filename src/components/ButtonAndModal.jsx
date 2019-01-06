@@ -6,12 +6,12 @@ import connect from '../utils/connect';
 
 const checkForEmptyString = value => (!value || !value.trim()
   ? 'name must not be empty'
-  : undefined
+  : null
 );
 
 const checkForAlphaNumeric = value => (value && /[^a-zA-Z0-9 ]/i.test(value)
   ? 'name may contain only alphanumeric characters'
-  : undefined
+  : null
 );
 
 const mapStateToProps = ({ channels, channelAddingSucceeded }) => ({
