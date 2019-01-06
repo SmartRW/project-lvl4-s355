@@ -26,20 +26,15 @@ export const switchCurrentChannelId = createAction('CHANNEL_SWITCH');
 export const channelAddingSuccess = createAction('CHANNEL_ADD_SUCCESS');
 export const channelAddingFailure = createAction('CHANNEL_ADD_FAILURE');
 
-export const addChannel = ({ newChannelName, channels }) => async (dispatch) => {
-  const existingChannelNames = channels.map(channel => channel.name);
-  if (newChannelName && newChannelName.trim() !== '' && !existingChannelNames.includes(newChannelName.trim())) {
-    const url = routes.getChannelsUrl();
-    const data = { attributes: { name: newChannelName } };
-    try {
-      await axios.post(url, { data });
-      dispatch(channelAddingSuccess());
-    } catch (e) {
-      dispatch(channelAddingFailure());
-      console.error(e);
-    }
-  } else {
+export const addChannel = ({ newChannelName }) => async (dispatch) => {
+  const url = routes.getChannelsUrl();
+  const data = { attributes: { name: newChannelName.trim() } };
+  try {
+    await axios.post(url, { data });
+    dispatch(channelAddingSuccess());
+  } catch (e) {
     dispatch(channelAddingFailure());
+    console.error(e);
   }
 };
 

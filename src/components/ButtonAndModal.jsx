@@ -4,6 +4,16 @@ import Modal from 'react-bootstrap/lib/Modal';
 import { Field, reduxForm } from 'redux-form';
 import connect from '../utils/connect';
 
+const checkForEmptyString = value => (!value || !value.trim()
+  ? 'name must not be empty'
+  : undefined
+);
+
+const checkForAlphaNumeric = value => (value && /[^a-zA-Z0-9 ]/i.test(value)
+  ? 'name may contain only alphanumeric characters'
+  : undefined
+);
+
 const mapStateToProps = ({ channels, channelAddingSucceeded }) => ({
   channels,
   channelAddingSucceeded,
@@ -22,27 +32,32 @@ class ButtonAndModal extends React.Component {
 
   handleShow = () => {
     this.setState({ showModal: true });
-    // this.newChannelNameInput.current.focus();
+    setTimeout(() => this.newChannelNameInput.current.focus(), 0);
   };
 
   handleClose = () => {
+    const { reset } = this.props;
     this.setState({ showModal: false });
+    reset();
   };
 
   addChannel = async ({ newChannelName }) => {
-    const { addChannel, channels, reset } = this.props;
+    const { addChannel, channels } = this.props;
     await addChannel({ newChannelName, channels });
     const { channelAddingSucceeded } = this.props;
-    console.dir(channelAddingSucceeded);
     if (channelAddingSucceeded) {
-      reset();
       this.handleClose();
     }
   }
 
-  renderInput = (field) => {
+  renderInput = ({ input, meta: { touched, error } }) => {
     const { submitting } = this.props;
-    return <input {...field.input} className="form-control" type="text" ref={this.newChannelNameInput} disabled={submitting} />;
+    return (
+      <>
+        <input {...input} className="form-control" type="text" ref={this.newChannelNameInput} disabled={submitting} />
+        {touched && (error && <small className="form-text text-mute text-danger">{error}</small>)}
+      </>
+    );
   }
 
   render = () => {
@@ -52,6 +67,7 @@ class ButtonAndModal extends React.Component {
       buttonName,
       handleSubmit,
       submitting,
+      channelAddingSucceeded,
     } = this.props;
     return (
       <>
@@ -70,7 +86,15 @@ class ButtonAndModal extends React.Component {
             <Modal.Body>
               <form className="form d-flex flex-column" onSubmit={handleSubmit(this.addChannel)}>
                 <div className="form-group">
-                  <Field component={this.renderInput} name="newChannelName" />
+                  <Field
+                    component={this.renderInput}
+                    name="newChannelName"
+                    validate={[
+                      checkForEmptyString,
+                      checkForAlphaNumeric,
+                    ]}
+                  />
+                  {!channelAddingSucceeded && <small className="form-text text-mute text-danger">Network error</small>}
                 </div>
                 <button className="btn btn-primary ml-auto" disabled={submitting} type="submit">add</button>
               </form>

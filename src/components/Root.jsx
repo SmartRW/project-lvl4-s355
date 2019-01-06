@@ -6,7 +6,7 @@ import ButtonAndModal from './ButtonAndModal';
 
 const Root = () => (
   <div className="row">
-    <div className="col-md-3 p-0 bg-info">
+    <div className="col-md-3 p-0 pb-2 bg-info">
       <Channels />
       <div className="text-center">
         <ButtonAndModal modalTitle="new channel" buttonName="+ add new channel" />

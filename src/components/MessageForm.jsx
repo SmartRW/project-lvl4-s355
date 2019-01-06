@@ -42,7 +42,7 @@ class MessageForm extends React.Component {
     return (
       <form className="form d-flex flex-column" onSubmit={handleSubmit(this.addMessage)}>
         <div className="form-group">
-          <Field component={this.renderInput} name="message" onChange={() => console.dir(this.props)} />
+          <Field component={this.renderInput} name="message" />
           {!messageAddingSucceedeed && <small className="form-text text-mute text-danger">Network error</small>}
         </div>
         <button className="btn btn-primary ml-auto" disabled={submitting} type="submit">send</button>

@@ -31,7 +31,7 @@ class Chat extends React.Component {
     const { currentChannelId, messages, currentUser } = this.props;
 
     return (
-      <ul className="d-flex flex-column-reverse list-group p-2 mb-2 overflow-auto border rounded overflow-auto" style={{ height: 500 }} scrolltop="-10000">
+      <ul className="d-flex flex-column-reverse list-group p-2 mb-2 overflow-auto border rounded overflow-auto" style={{ height: 500 }}>
         {messages
           .filter(message => message.channelId === currentChannelId)
           .reverse()
