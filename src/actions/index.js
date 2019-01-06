@@ -30,7 +30,7 @@ export const addChannel = ({ newChannelName, channels }) => async (dispatch) => 
   const existingChannelNames = channels.map(channel => channel.name);
   if (newChannelName && newChannelName.trim() !== '' && !existingChannelNames.includes(newChannelName.trim())) {
     const url = routes.getChannelsUrl();
-    const data = { name: newChannelName };
+    const data = { attributes: { name: newChannelName } };
     try {
       console.dir({ data });
       await axios.post(url, { data });
@@ -43,3 +43,5 @@ export const addChannel = ({ newChannelName, channels }) => async (dispatch) => 
     dispatch(channelAddingFailure());
   }
 };
+
+export const updateChannels = createAction('CHANNELS_UPDATE');

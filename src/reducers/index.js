@@ -24,8 +24,15 @@ const channelAddingSucceedeed = handleActions({
   [actions.channelAddingFailure]: () => false,
 }, true);
 
+const channels = handleActions({
+  [actions.updateChannels]: (state, { payload: { attributes } }) => [
+    ...state,
+    attributes,
+  ],
+}, []);
+
 export default combineReducers({
-  channels: (state = {}) => state,
+  channels,
   messages,
   currentChannelId,
   currentUser: (state = {}) => state,
