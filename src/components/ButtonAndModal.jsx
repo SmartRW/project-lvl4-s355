@@ -4,9 +4,9 @@ import Modal from 'react-bootstrap/lib/Modal';
 import { Field, reduxForm } from 'redux-form';
 import connect from '../utils/connect';
 
-const mapStateToProps = ({ channels, channelAddingSucceedeed }) => ({
+const mapStateToProps = ({ channels, channelAddingSucceeded }) => ({
   channels,
-  channelAddingSucceedeed,
+  channelAddingSucceeded,
 });
 
 @connect(mapStateToProps)
@@ -30,10 +30,12 @@ class ButtonAndModal extends React.Component {
   };
 
   addChannel = async ({ newChannelName }) => {
-    const { addChannel, channels } = this.props;
+    const { addChannel, channels, reset } = this.props;
     await addChannel({ newChannelName, channels });
-    const { channelAddingSuccess } = this.props;
-    if (channelAddingSuccess) {
+    const { channelAddingSucceeded } = this.props;
+    console.dir(channelAddingSucceeded);
+    if (channelAddingSucceeded) {
+      reset();
       this.handleClose();
     }
   }
