@@ -10,7 +10,7 @@ const messages = handleActions({
   ],
 }, []);
 
-const messageAddingSucceedeed = handleActions({
+const messageAddingSucceeded = handleActions({
   [actions.messageAddingSuccess]: () => true,
   [actions.messageAddingFailure]: () => false,
 }, true);
@@ -36,7 +36,7 @@ export default combineReducers({
   messages,
   currentChannelId,
   currentUser: (state = {}) => state,
-  messageAddingSucceedeed,
+  messageAddingSucceeded,
   channelAddingSucceeded,
   form: formReducer,
 });

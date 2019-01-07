@@ -1,5 +1,4 @@
 import React from 'react';
-import io from 'socket.io-client';
 import cn from 'classnames';
 import connect from '../utils/connect';
 
@@ -7,13 +6,6 @@ const mapStateToProps = ({ channels, currentChannelId }) => ({ channels, current
 
 @connect(mapStateToProps)
 class Channels extends React.Component {
-  constructor(props) {
-    super(props);
-    const { updateChannels } = this.props;
-    const socket = io();
-    socket.on('newChannel', ({ data }) => updateChannels(data));
-  }
-
   onClick = id => () => {
     const { switchCurrentChannelId } = this.props;
     switchCurrentChannelId({ newChannelId: id });

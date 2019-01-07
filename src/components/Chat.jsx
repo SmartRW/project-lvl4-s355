@@ -1,5 +1,4 @@
 import React from 'react';
-import io from 'socket.io-client';
 import connect from '../utils/connect';
 
 const mapStateToProps = ({ currentChannelId, messages, currentUser }) => ({
@@ -20,13 +19,6 @@ const getNickname = (authorName, currentName) => (
 
 @connect(mapStateToProps)
 class Chat extends React.Component {
-  constructor(props) {
-    super(props);
-    const { updateMessages } = this.props;
-    const socket = io();
-    socket.on('newMessage', ({ data }) => updateMessages(data));
-  }
-
   render = () => {
     const { currentChannelId, messages, currentUser } = this.props;
 

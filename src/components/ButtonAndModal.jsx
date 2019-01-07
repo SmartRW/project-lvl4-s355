@@ -2,6 +2,7 @@ import React from 'react';
 import Button from 'react-bootstrap/lib/Button';
 import Modal from 'react-bootstrap/lib/Modal';
 import { Field, reduxForm } from 'redux-form';
+import { memoize } from 'lodash';
 import connect from '../utils/connect';
 
 const checkForEmptyString = value => (!value || !value.trim()
@@ -12,6 +13,15 @@ const checkForEmptyString = value => (!value || !value.trim()
 const checkForAlphaNumeric = value => (value && /[^a-zA-Z0-9 ]/i.test(value)
   ? 'name may contain only alphanumeric characters'
   : null
+);
+
+const checkForUniqueName = memoize(
+  channels => (name) => {
+    const names = channels.map(channel => channel.name);
+    return names.includes(name.trim())
+      ? 'name must be unique'
+      : null;
+  },
 );
 
 const mapStateToProps = ({ channels, channelAddingSucceeded }) => ({
@@ -42,12 +52,8 @@ class ButtonAndModal extends React.Component {
   };
 
   addChannel = async ({ newChannelName }) => {
-    const { addChannel, channels } = this.props;
-    await addChannel({ newChannelName, channels });
-    const { channelAddingSucceeded } = this.props;
-    if (channelAddingSucceeded) {
-      this.handleClose();
-    }
+    const { addChannel } = this.props;
+    await addChannel({ newChannelName, closeModal: this.handleClose });
   }
 
   renderInput = ({ input, meta: { touched, error } }) => {
@@ -68,6 +74,7 @@ class ButtonAndModal extends React.Component {
       handleSubmit,
       submitting,
       channelAddingSucceeded,
+      channels,
     } = this.props;
     return (
       <>
@@ -92,6 +99,7 @@ class ButtonAndModal extends React.Component {
                     validate={[
                       checkForEmptyString,
                       checkForAlphaNumeric,
+                      checkForUniqueName(channels),
                     ]}
                   />
                   {!channelAddingSucceeded && <small className="form-text text-mute text-danger">Network error</small>}
