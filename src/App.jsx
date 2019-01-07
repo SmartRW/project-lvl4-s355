@@ -12,8 +12,8 @@ import Root from './components/Root';
 import * as actions from './actions';
 
 // eslint-disable-next-line no-underscore-dangle
-const ext = window.__REDUX_DEVTOOLS_EXTENSION__;
-const devtoolsMiddleware = ext && ext();
+// const ext = window.__REDUX_DEVTOOLS_EXTENSION__;
+// const devtoolsMiddleware = ext && ext();
 
 const getUserName = () => {
   if (cookies.get('userName')) {
@@ -32,7 +32,7 @@ export default (initialData) => {
     initialState,
     compose(
       applyMiddleware(thunk),
-      devtoolsMiddleware,
+      // devtoolsMiddleware,
     ),
   );
 
