@@ -11,10 +11,8 @@ export const checkForAlphaNumeric = value => (value && /[^a-zA-Z0-9 ]/i.test(val
 );
 
 export const checkForUniqueName = memoize(
-  channels => (name) => {
-    const names = channels.map(channel => channel.name);
-    return names.find(el => el === name.trim())
-      ? 'name must be unique'
-      : null;
-  },
+  channels => name => (channels
+    .find(channel => channel.name === name.trim())
+    ? 'name must be unique'
+    : null),
 );
