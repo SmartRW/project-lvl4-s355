@@ -31,7 +31,7 @@ const mapStateToProps = ({ channels, channelAddingSucceeded }) => ({
 
 @connect(mapStateToProps)
 @reduxForm({ form: 'newChannel' })
-class ButtonAndModal extends React.Component {
+class NewChannelModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -116,4 +116,4 @@ class ButtonAndModal extends React.Component {
   }
 }
 
-export default ButtonAndModal;
+export default NewChannelModal;
