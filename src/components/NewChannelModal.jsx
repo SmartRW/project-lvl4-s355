@@ -2,27 +2,8 @@ import React from 'react';
 import Button from 'react-bootstrap/lib/Button';
 import Modal from 'react-bootstrap/lib/Modal';
 import { Field, reduxForm } from 'redux-form';
-import { memoize } from 'lodash';
 import connect from '../utils/connect';
-
-const checkForEmptyString = value => (!value || !value.trim()
-  ? 'name must not be empty'
-  : null
-);
-
-const checkForAlphaNumeric = value => (value && /[^a-zA-Z0-9 ]/i.test(value)
-  ? 'name may contain only alphanumeric characters'
-  : null
-);
-
-const checkForUniqueName = memoize(
-  channels => (name) => {
-    const names = channels.map(channel => channel.name);
-    return names.includes(name.trim())
-      ? 'name must be unique'
-      : null;
-  },
-);
+import { checkForEmptyString, checkForAlphaNumeric, checkForUniqueName } from '../utils/validators';
 
 const mapStateToProps = ({ channels, channelAddingSucceeded }) => ({
   channels,
