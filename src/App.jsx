@@ -12,8 +12,7 @@ import Root from './components/Root';
 import * as actions from './actions';
 
 // eslint-disable-next-line no-underscore-dangle
-const ext = window.__REDUX_DEVTOOLS_EXTENSION__;
-const devtoolsMiddleware = ext && ext();
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const getUserName = () => {
   if (cookies.get('userName')) {
@@ -30,9 +29,8 @@ export default (initialData) => {
   const store = createStore(
     reducers,
     initialState,
-    compose(
+    composeEnhancers(
       applyMiddleware(thunk),
-      devtoolsMiddleware,
     ),
   );
 
