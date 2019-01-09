@@ -59,7 +59,7 @@ class NewChannelModal extends React.Component {
     } = this.props;
     return (
       <>
-        <Button className="border-0 rounded-0" onClick={this.handleShow} variant="info" type="button" size="sm">
+        <Button className="rounded-0" onClick={this.handleShow} variant="info" type="button" size="sm">
           {buttonName}
         </Button>
 
