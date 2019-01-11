@@ -37,6 +37,7 @@ export default (initialData) => {
   const socket = io();
   socket.on('newMessage', ({ data }) => store.dispatch(actions.updateMessages(data)));
   socket.on('newChannel', ({ data }) => store.dispatch(actions.updateChannels(data)));
+  socket.on('renameChannel', ({ data }) => store.dispatch(actions.updateChannel(data)));
 
   render(
     <Provider store={store}>

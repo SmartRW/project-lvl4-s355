@@ -16,3 +16,10 @@ export const checkForUniqueName = memoize(
     ? 'name must be unique'
     : null),
 );
+
+export const checkForUniqueOrCurrentName = memoize(
+  (channels, currentName) => name => (channels
+    .find(channel => channel.name === name.trim() && currentName !== name.trim())
+    ? 'name must be unique'
+    : null),
+);

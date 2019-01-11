@@ -2,16 +2,81 @@ import React from 'react';
 import cn from 'classnames';
 import Dropdown from 'react-bootstrap/lib/Dropdown';
 import Button from 'react-bootstrap/lib/Button';
+import Modal from 'react-bootstrap/lib/Modal';
+import { Field, reduxForm } from 'redux-form';
 import connect from '../utils/connect';
-import RenameChannelModal from './RenameChannelModal';
+import { checkForEmptyString, checkForAlphaNumeric, checkForUniqueOrCurrentName } from '../utils/validators';
 
-const mapStateToProps = ({ channels, currentChannelId }) => ({ channels, currentChannelId });
+const mapStateToProps = ({
+  channels,
+  currentChannelId,
+  currentlyEditedChannelId,
+  channelRenamingSucceeded,
+}) => ({
+  channels,
+  currentChannelId,
+  currentlyEditedChannelId,
+  channelRenamingSucceeded,
+  initialValues: {
+    channelNewName: currentlyEditedChannelId
+      ? channels.find(c => c.id === currentlyEditedChannelId).name
+      : null,
+  },
+});
 
 @connect(mapStateToProps)
+@reduxForm({ form: 'renameChannel', enableReinitialize: true })
 class Channels extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showRenameChannelModal: false,
+    };
+    this.renameChannelInput = React.createRef();
+  }
+
   onClick = id => () => {
     const { switchCurrentChannelId } = this.props;
     switchCurrentChannelId({ newChannelId: id });
+  }
+
+  onSelect = (id) => {
+    const { setCurrentlyEditedChannelId } = this.props;
+    setCurrentlyEditedChannelId({ channelId: id });
+  }
+
+  handleShowRenameModal = () => {
+    this.setState({ showRenameChannelModal: true });
+    setTimeout(() => {
+      this.renameChannelInput.current.focus();
+      this.renameChannelInput.current.select();
+    }, 0);
+  }
+
+  handleCloseRenameModal = () => {
+    const { reset, resetCurrentlyEditedChannelId } = this.props;
+    this.setState({ showRenameChannelModal: false });
+    resetCurrentlyEditedChannelId();
+    reset();
+  };
+
+  renameChannel = async ({ channelNewName }) => {
+    const { renameChannel, currentlyEditedChannelId } = this.props;
+    await renameChannel({
+      channelNewName,
+      channelId: currentlyEditedChannelId,
+      closeModal: this.handleCloseRenameModal,
+    });
+  }
+
+  renderInput = ({ input, meta: { touched, error } }) => {
+    const { submitting } = this.props;
+    return (
+      <>
+        <input {...input} className="form-control" type="text" ref={this.renameChannelInput} disabled={submitting} />
+        {touched && (error && <small className="form-text text-mute text-danger">{error}</small>)}
+      </>
+    );
   }
 
   render = () => {
@@ -23,9 +88,45 @@ class Channels extends React.Component {
       'overflow-hidden': true,
       'text-nowrap': true,
     };
+    const { showRenameChannelModal } = this.state;
+    const {
+      handleSubmit,
+      submitting,
+      channelRenamingSucceeded,
+      initialValues: { channelNewName },
+    } = this.props;
 
     return (
       <div className="mb-3 p-2 d-flex flex-column">
+        {showRenameChannelModal && (
+          <Modal show={showRenameChannelModal} onHide={this.handleCloseRenameModal}>
+            <Modal.Header>
+              <Modal.Title>
+                enter new name
+              </Modal.Title>
+            </Modal.Header>
+
+            <Modal.Body>
+              <form className="form d-flex flex-column" onSubmit={handleSubmit(this.renameChannel)}>
+                <div className="form-group">
+                  <Field
+                    component={this.renderInput}
+                    name="channelNewName"
+                    validate={[
+                      checkForEmptyString,
+                      checkForAlphaNumeric,
+                      checkForUniqueOrCurrentName(channels, channelNewName),
+                    ]}
+                  />
+                  {!channelRenamingSucceeded && <small className="form-text text-mute text-danger">Network error</small>}
+                </div>
+                <button className="btn btn-primary ml-auto" disabled={submitting} type="submit">add</button>
+              </form>
+            </Modal.Body>
+
+            <Modal.Footer />
+          </Modal>
+        )}
         {channels.map(channel => (
           channel.removable
             ? (
@@ -42,14 +143,15 @@ class Channels extends React.Component {
                   {`# ${channel.name}`}
                 </Button>
 
-                <Dropdown.Toggle split variant="info" className="mb-1 rounded-0 ml-1" id="dropdown-split-basic" />
+                <Dropdown.Toggle split variant="info" className="mb-1 rounded-0 ml-1" id={`channel-${channel.id}`} />
 
                 <Dropdown.Menu>
-                  <Dropdown.Item as={RenameChannelModal}>
+                  <Dropdown.Item
+                    eventKey={channel.id}
+                    onSelect={this.onSelect}
+                    onClick={this.handleShowRenameModal}
+                  >
                     rename
-                  </Dropdown.Item>
-                  <Dropdown.Item as={RenameChannelModal}>
-                    remove
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>

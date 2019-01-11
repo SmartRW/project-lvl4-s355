@@ -45,4 +45,26 @@ export const addChannel = ({ newChannelName, closeModal }) => async (dispatch) =
   }
 };
 
+export const channelRenamingSuccess = createAction('CHANNEL_RENAME_SUCCESS');
+export const channelRenamingFailure = createAction('CHANNEL_RENAME_FAILURE');
+
+export const renameChannel = ({ channelNewName, channelId, closeModal }) => async (dispatch) => {
+  const url = routes.getChannelUrl(channelId);
+  const data = { attributes: { name: channelNewName.trim() } };
+  try {
+    await axios.patch(url, { data });
+    closeModal();
+    dispatch(channelRenamingSuccess());
+  } catch (e) {
+    dispatch(channelRenamingFailure());
+    console.error(e);
+  }
+};
+
 export const updateChannels = createAction('CHANNELS_UPDATE');
+
+export const setCurrentlyEditedChannelId = createAction('CURRENTLY_EDITED_CHANNEL_ID_SET');
+
+export const resetCurrentlyEditedChannelId = createAction('CURRENTLY_EDITED_CHANNEL_ID_RESET');
+
+export const updateChannel = createAction('CHANNEL_UPDATE');

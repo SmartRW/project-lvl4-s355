@@ -29,7 +29,23 @@ const channels = handleActions({
     ...state,
     attributes,
   ],
+  [actions.updateChannel]: (state, { payload: { attributes: { id, name } } }) => {
+    const newState = state.slice();
+    const renamedChannelIndex = newState.findIndex(item => item.id === id);
+    newState[renamedChannelIndex].name = name;
+    return newState;
+  },
 }, []);
+
+const channelRenamingSucceeded = handleActions({
+  [actions.channelRenamingSuccess]: () => true,
+  [actions.channelRenamingFailure]: () => false,
+}, true);
+
+const currentlyEditedChannelId = handleActions({
+  [actions.setCurrentlyEditedChannelId]: (state, { payload: { channelId } }) => Number(channelId),
+  [actions.resetCurrentlyEditedChannelId]: () => null,
+}, null);
 
 export default combineReducers({
   channels,
@@ -38,5 +54,7 @@ export default combineReducers({
   currentUser: (state = {}) => state,
   messageAddingSucceeded,
   channelAddingSucceeded,
+  channelRenamingSucceeded,
+  currentlyEditedChannelId,
   form: formReducer,
 });
