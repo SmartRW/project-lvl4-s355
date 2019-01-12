@@ -142,7 +142,7 @@ class Channels extends React.Component {
                   />
                   {!channelRenamingSucceeded && <small className="form-text text-mute text-danger">Network error</small>}
                 </div>
-                <button className="btn btn-primary ml-auto" disabled={submitting} type="submit">add</button>
+                <button className="btn btn-outline-primary ml-auto" disabled={submitting} type="submit">add</button>
               </form>
             </Modal.Body>
 
@@ -159,8 +159,10 @@ class Channels extends React.Component {
 
             <Modal.Body>
               {!channelRemovalSucceeded && <small className="form-text text-mute text-danger">Network error</small>}
-              <button className="btn btn-secondary" onClick={this.handleCloseRemoveModal} disabled={submitting} type="button">please dont</button>
-              <button className="btn btn-primary" onClick={this.removeChannel} disabled={submitting} type="button">kill it</button>
+              <div className="d-flex">
+                <button className="btn btn-outline-secondary mr-auto" onClick={this.handleCloseRemoveModal} disabled={submitting} type="button">please dont</button>
+                <button className="btn btn-outline-primary" onClick={this.removeChannel} disabled={submitting} type="button">kill it</button>
+              </div>
             </Modal.Body>
 
             <Modal.Footer />

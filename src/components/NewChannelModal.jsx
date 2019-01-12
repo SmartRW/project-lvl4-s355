@@ -50,8 +50,6 @@ class NewChannelModal extends React.Component {
   render = () => {
     const { showModal } = this.state;
     const {
-      modalTitle,
-      buttonName,
       handleSubmit,
       submitting,
       channelAddingSucceeded,
@@ -60,14 +58,14 @@ class NewChannelModal extends React.Component {
     return (
       <>
         <Button className="rounded-0" onClick={this.handleShow} variant="info" type="button" size="sm">
-          {buttonName}
+          + add new channel
         </Button>
 
         {showModal && (
           <Modal show={showModal} onHide={this.handleClose}>
             <Modal.Header>
               <Modal.Title>
-                {modalTitle}
+                enter name for new channel
               </Modal.Title>
             </Modal.Header>
 
@@ -85,7 +83,7 @@ class NewChannelModal extends React.Component {
                   />
                   {!channelAddingSucceeded && <small className="form-text text-mute text-danger">Network error</small>}
                 </div>
-                <button className="btn btn-primary ml-auto" disabled={submitting} type="submit">add</button>
+                <button className="btn btn-outline-primary ml-auto" disabled={submitting} type="submit">add</button>
               </form>
             </Modal.Body>
 
