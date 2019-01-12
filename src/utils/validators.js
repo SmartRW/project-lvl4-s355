@@ -23,3 +23,10 @@ export const checkForUniqueOrCurrentName = memoize(
     ? 'name must be unique'
     : null),
 );
+
+export const checkForMaxLength = (value) => {
+  const maxLength = 20;
+  return value.trim().length > maxLength
+    ? `max ${maxLength} chars`
+    : null;
+};

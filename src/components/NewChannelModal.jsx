@@ -3,7 +3,12 @@ import Button from 'react-bootstrap/lib/Button';
 import Modal from 'react-bootstrap/lib/Modal';
 import { Field, reduxForm } from 'redux-form';
 import connect from '../utils/connect';
-import { checkForEmptyString, checkForAlphaNumeric, checkForUniqueName } from '../utils/validators';
+import {
+  checkForEmptyString,
+  checkForAlphaNumeric,
+  checkForUniqueName,
+  checkForMaxLength,
+} from '../utils/validators';
 
 const mapStateToProps = ({ channels, channelAddingSucceeded }) => ({
   channels,
@@ -78,6 +83,7 @@ class NewChannelModal extends React.Component {
                     validate={[
                       checkForEmptyString,
                       checkForAlphaNumeric,
+                      checkForMaxLength,
                       checkForUniqueName(channels),
                     ]}
                   />
