@@ -107,13 +107,6 @@ class Channels extends React.Component {
 
   render = () => {
     const { channels, currentChannelId } = this.props;
-    const channelClasses = {
-      'mb-1': true,
-      'rounded-0': true,
-      'text-left': true,
-      'overflow-hidden': true,
-      'text-nowrap': true,
-    };
     const { showRenameChannelModal, showRemoveChannelModal } = this.state;
     const {
       handleSubmit,
@@ -175,54 +168,47 @@ class Channels extends React.Component {
           </Modal>
         )}
         {channels.map(channel => (
-          channel.removable
-            ? (
-              <Dropdown key={channel.id} className="d-flex">
-                <Button
-                  variant="info"
-                  onClick={this.onClick(channel.id)}
-                  className={cn({
-                    ...channelClasses,
-                    'flex-grow-1': true,
-                    'font-weight-bolder': currentChannelId === channel.id,
-                  })}
-                >
-                  {`# ${channel.name}`}
-                </Button>
-
-                <Dropdown.Toggle split variant="info" className="mb-1 rounded-0 ml-1" id={`channel-${channel.id}`} />
-
-                <Dropdown.Menu>
-                  <Dropdown.Item
-                    eventKey={channel.id}
-                    onSelect={this.onSelect}
-                    onClick={this.handleShowRenameModal}
-                  >
-                    rename
-                  </Dropdown.Item>
-                  <Dropdown.Item
-                    eventKey={channel.id}
-                    onSelect={this.onSelect}
-                    onClick={this.handleShowRemoveModal}
-                  >
-                    remove
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            )
-            : (
+          (
+            <Dropdown key={channel.id} className="d-flex">
               <Button
                 variant="info"
-                key={channel.id}
                 onClick={this.onClick(channel.id)}
                 className={cn({
-                  ...channelClasses,
+                  'mb-1': true,
+                  'rounded-0': true,
+                  'text-left': true,
+                  'overflow-hidden': true,
+                  'text-nowrap': true,
+                  'flex-grow-1': true,
                   'font-weight-bolder': currentChannelId === channel.id,
                 })}
               >
                 {`# ${channel.name}`}
               </Button>
-            )
+
+              <Dropdown.Toggle split variant="info" className="mb-1 rounded-0 ml-1" id={`channel-${channel.id}`} />
+
+              <Dropdown.Menu>
+                <Dropdown.Item
+                  eventKey={channel.id}
+                  onSelect={this.onSelect}
+                  onClick={this.handleShowRenameModal}
+                >
+                  rename
+                </Dropdown.Item>
+                {channel.removable
+                  && (
+                    <Dropdown.Item
+                      eventKey={channel.id}
+                      onSelect={this.onSelect}
+                      onClick={this.handleShowRemoveModal}
+                    >
+                      remove
+                    </Dropdown.Item>
+                  )}
+              </Dropdown.Menu>
+            </Dropdown>
+          )
         ))}
       </div>
     );
