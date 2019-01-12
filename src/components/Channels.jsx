@@ -12,13 +12,15 @@ const mapStateToProps = ({
   currentChannelId,
   currentlyEditedChannelId,
   channelRenamingSucceeded,
+  channelRemovalSucceeded,
 }) => ({
   channels,
   currentChannelId,
   currentlyEditedChannelId,
   channelRenamingSucceeded,
+  channelRemovalSucceeded,
   initialValues: {
-    channelNewName: currentlyEditedChannelId
+    channelNewName: channels.find(c => c.id === currentlyEditedChannelId)
       ? channels.find(c => c.id === currentlyEditedChannelId).name
       : null,
   },
@@ -31,6 +33,7 @@ class Channels extends React.Component {
     super(props);
     this.state = {
       showRenameChannelModal: false,
+      showRemoveChannelModal: false,
     };
     this.renameChannelInput = React.createRef();
   }
@@ -60,12 +63,30 @@ class Channels extends React.Component {
     reset();
   };
 
+  handleShowRemoveModal = () => {
+    this.setState({ showRemoveChannelModal: true });
+  }
+
+  handleCloseRemoveModal = () => {
+    const { resetCurrentlyEditedChannelId } = this.props;
+    this.setState({ showRemoveChannelModal: false });
+    resetCurrentlyEditedChannelId();
+  }
+
   renameChannel = async ({ channelNewName }) => {
     const { renameChannel, currentlyEditedChannelId } = this.props;
     await renameChannel({
       channelNewName,
       channelId: currentlyEditedChannelId,
       closeModal: this.handleCloseRenameModal,
+    });
+  }
+
+  removeChannel = async () => {
+    const { removeChannel, currentlyEditedChannelId } = this.props;
+    await removeChannel({
+      channelId: currentlyEditedChannelId,
+      closeModal: this.handleCloseRemoveModal,
     });
   }
 
@@ -88,11 +109,12 @@ class Channels extends React.Component {
       'overflow-hidden': true,
       'text-nowrap': true,
     };
-    const { showRenameChannelModal } = this.state;
+    const { showRenameChannelModal, showRemoveChannelModal } = this.state;
     const {
       handleSubmit,
       submitting,
       channelRenamingSucceeded,
+      channelRemovalSucceeded,
       initialValues: { channelNewName },
     } = this.props;
 
@@ -127,6 +149,23 @@ class Channels extends React.Component {
             <Modal.Footer />
           </Modal>
         )}
+        {showRemoveChannelModal && (
+          <Modal show={showRemoveChannelModal} onHide={this.handleCloseRemoveModal}>
+            <Modal.Header>
+              <Modal.Title>
+                are you sure?
+              </Modal.Title>
+            </Modal.Header>
+
+            <Modal.Body>
+              {!channelRemovalSucceeded && <small className="form-text text-mute text-danger">Network error</small>}
+              <button className="btn btn-secondary" onClick={this.handleCloseRemoveModal} disabled={submitting} type="button">please dont</button>
+              <button className="btn btn-primary" onClick={this.removeChannel} disabled={submitting} type="button">kill it</button>
+            </Modal.Body>
+
+            <Modal.Footer />
+          </Modal>
+        )}
         {channels.map(channel => (
           channel.removable
             ? (
@@ -152,6 +191,13 @@ class Channels extends React.Component {
                     onClick={this.handleShowRenameModal}
                   >
                     rename
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    eventKey={channel.id}
+                    onSelect={this.onSelect}
+                    onClick={this.handleShowRemoveModal}
+                  >
+                    remove
                   </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>

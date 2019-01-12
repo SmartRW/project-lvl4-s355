@@ -4,10 +4,11 @@ import { handleActions } from 'redux-actions';
 import * as actions from '../actions';
 
 const messages = handleActions({
-  [actions.updateMessages]: (state, { payload: { attributes } }) => [
+  [actions.addingMessage]: (state, { payload: { attributes } }) => [
     ...state,
     attributes,
   ],
+  [actions.removalMessages]: (state, { payload: { id } }) => state.filter(m => m.channelId !== id),
 }, []);
 
 const messageAddingSucceeded = handleActions({
@@ -19,33 +20,40 @@ const currentChannelId = handleActions({
   [actions.switchCurrentChannelId]: (state, { payload: { newChannelId } }) => newChannelId,
 }, 1);
 
-const channelAddingSucceeded = handleActions({
-  [actions.channelAddingSuccess]: () => true,
-  [actions.channelAddingFailure]: () => false,
-}, true);
+const currentlyEditedChannelId = handleActions({
+  [actions.setCurrentlyEditedChannelId]: (state, { payload: { channelId } }) => Number(channelId),
+  [actions.resetCurrentlyEditedChannelId]: () => null,
+}, null);
 
 const channels = handleActions({
-  [actions.updateChannels]: (state, { payload: { attributes } }) => [
+  [actions.addingChannel]: (state, { payload: { attributes } }) => [
     ...state,
     attributes,
   ],
-  [actions.updateChannel]: (state, { payload: { attributes: { id, name } } }) => {
+  [actions.renamingChannel]: (state, { payload: { attributes: { id, name } } }) => {
     const newState = state.slice();
     const renamedChannelIndex = newState.findIndex(item => item.id === id);
     newState[renamedChannelIndex].name = name;
     return newState;
   },
+  [actions.removalChannel]: (state, { payload: { id } }) => state
+    .filter(c => c.id !== id),
 }, []);
+
+const channelAddingSucceeded = handleActions({
+  [actions.channelAddingSuccess]: () => true,
+  [actions.channelAddingFailure]: () => false,
+}, true);
 
 const channelRenamingSucceeded = handleActions({
   [actions.channelRenamingSuccess]: () => true,
   [actions.channelRenamingFailure]: () => false,
 }, true);
 
-const currentlyEditedChannelId = handleActions({
-  [actions.setCurrentlyEditedChannelId]: (state, { payload: { channelId } }) => Number(channelId),
-  [actions.resetCurrentlyEditedChannelId]: () => null,
-}, null);
+const channelRemovalSucceeded = handleActions({
+  [actions.channelRemovalSuccess]: () => true,
+  [actions.channelRemovalFailure]: () => false,
+}, true);
 
 export default combineReducers({
   channels,
@@ -55,6 +63,7 @@ export default combineReducers({
   messageAddingSucceeded,
   channelAddingSucceeded,
   channelRenamingSucceeded,
+  channelRemovalSucceeded,
   currentlyEditedChannelId,
   form: formReducer,
 });

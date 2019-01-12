@@ -35,9 +35,13 @@ export default (initialData) => {
   );
 
   const socket = io();
-  socket.on('newMessage', ({ data }) => store.dispatch(actions.updateMessages(data)));
-  socket.on('newChannel', ({ data }) => store.dispatch(actions.updateChannels(data)));
-  socket.on('renameChannel', ({ data }) => store.dispatch(actions.updateChannel(data)));
+  socket.on('newMessage', ({ data }) => store.dispatch(actions.addingMessage(data)));
+  socket.on('newChannel', ({ data }) => store.dispatch(actions.addingChannel(data)));
+  socket.on('renameChannel', ({ data }) => store.dispatch(actions.renamingChannel(data)));
+  socket.on('removeChannel', ({ data }) => {
+    store.dispatch(actions.removalChannel(data));
+    store.dispatch(actions.removalMessages(data));
+  });
 
   render(
     <Provider store={store}>
