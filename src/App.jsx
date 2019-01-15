@@ -23,8 +23,34 @@ const getUserName = () => {
   return userName;
 };
 
+const normalizeInitialData = (data) => {
+  const { channels, messages } = data;
+  return {
+    ...data,
+    channels: {
+      byId: channels.reduce((acc, { id, name, removable }) => ({
+        ...acc,
+        [id]: { name, removable },
+      }), {}),
+      allIds: channels.map(channel => channel.id),
+    },
+    messages: {
+      byId: messages.reduce((acc, {
+        id,
+        channelId,
+        userName,
+        message,
+      }) => ({
+        ...acc,
+        [id]: { channelId, userName, message },
+      }), {}),
+      allIds: messages.map(message => message.id),
+    },
+  };
+};
+
 export default (initialData) => {
-  const initialState = { ...initialData, currentUser: getUserName() };
+  const initialState = { ...normalizeInitialData(initialData), currentUser: getUserName() };
 
   const store = createStore(
     reducers,

@@ -1,15 +1,32 @@
 import { combineReducers } from 'redux';
 import { reducer as formReducer } from 'redux-form';
 import { handleActions } from 'redux-actions';
+import { omit } from 'lodash';
 import * as actions from '../actions';
 
+const DEFAULT_CHANNEL_ID = 1;
+
 const messages = handleActions({
-  [actions.addingMessage]: (state, { payload: { attributes } }) => [
-    ...state,
-    attributes,
-  ],
-  [actions.removalMessages]: (state, { payload: { id } }) => state.filter(m => m.channelId !== id),
-}, []);
+  [actions.addingMessage]: (state, {
+    payload: {
+      attributes: {
+        id,
+        channelId,
+        userName,
+        message,
+      },
+    },
+  }) => ({
+    byId: { ...state.byId, [id]: { channelId, userName, message } },
+    allIds: [...state.allIds, id],
+  }),
+  [actions.removalMessages]: (state, {
+    payload: { id },
+  }) => ({
+    byId: omit(state.byId, id),
+    allIds: state.allIds.filter(messageId => state.byId[messageId].channelId !== id),
+  }),
+}, {});
 
 const messageAddingSucceeded = handleActions({
   [actions.messageAddingSuccess]: () => true,
@@ -18,27 +35,42 @@ const messageAddingSucceeded = handleActions({
 
 const currentChannelId = handleActions({
   [actions.switchCurrentChannelId]: (state, { payload: { newChannelId } }) => newChannelId,
-}, 1);
+}, DEFAULT_CHANNEL_ID);
 
 const currentlyEditedChannelId = handleActions({
-  [actions.setCurrentlyEditedChannelId]: (state, { payload: { channelId } }) => Number(channelId),
+  [actions.setCurrentlyEditedChannelId]: (state, { payload: { channelId } }) => channelId,
   [actions.resetCurrentlyEditedChannelId]: () => null,
 }, null);
 
 const channels = handleActions({
-  [actions.addingChannel]: (state, { payload: { attributes } }) => [
+  [actions.addingChannel]: (state, {
+    payload: {
+      attributes: {
+        id,
+        name,
+        removable,
+      },
+    },
+  }) => ({
+    byId: { ...state.byId, [id]: { name, removable } },
+    allIds: [...state.allIds, id],
+  }),
+  [actions.renamingChannel]: (state, {
+    payload: {
+      attributes: {
+        id,
+        name,
+      },
+    },
+  }) => ({
     ...state,
-    attributes,
-  ],
-  [actions.renamingChannel]: (state, { payload: { attributes: { id, name } } }) => {
-    const newState = state.slice();
-    const renamedChannelIndex = newState.findIndex(item => item.id === id);
-    newState[renamedChannelIndex].name = name;
-    return newState;
-  },
-  [actions.removalChannel]: (state, { payload: { id } }) => state
-    .filter(c => c.id !== id),
-}, []);
+    byId: { ...state.byId, [id]: { ...state.byId[id], name } },
+  }),
+  [actions.removalChannel]: (state, { payload: { id } }) => ({
+    byId: omit(state.byId, id),
+    allIds: state.allIds.filter(channelId => channelId !== id),
+  }),
+}, {});
 
 const channelAddingSucceeded = handleActions({
   [actions.channelAddingSuccess]: () => true,

@@ -25,8 +25,8 @@ const mapStateToProps = ({
   channelRenamingSucceeded,
   channelRemovalSucceeded,
   initialValues: {
-    channelNewName: channels.find(c => c.id === currentlyEditedChannelId)
-      ? channels.find(c => c.id === currentlyEditedChannelId).name
+    channelNewName: channels.byId[currentlyEditedChannelId]
+      ? channels.byId[currentlyEditedChannelId].name
       : null,
   },
 });
@@ -106,9 +106,10 @@ class Channels extends React.Component {
   }
 
   render = () => {
-    const { channels, currentChannelId } = this.props;
     const { showRenameChannelModal, showRemoveChannelModal } = this.state;
     const {
+      channels,
+      currentChannelId,
       handleSubmit,
       submitting,
       channelRenamingSucceeded,
@@ -167,11 +168,11 @@ class Channels extends React.Component {
             <Modal.Footer />
           </Modal>
         )}
-        {channels.map(channel => (
-          <Dropdown key={channel.id} className="d-flex">
+        {channels.allIds.map(id => (
+          <Dropdown key={id} className="d-flex">
             <Button
               variant="info"
-              onClick={this.onClick(channel.id)}
+              onClick={this.onClick(id)}
               className={cn({
                 'mb-1': true,
                 'rounded-0': true,
@@ -179,26 +180,26 @@ class Channels extends React.Component {
                 'overflow-hidden': true,
                 'text-nowrap': true,
                 'flex-grow-1': true,
-                'font-weight-bolder': currentChannelId === channel.id,
+                'font-weight-bolder': currentChannelId === id,
               })}
             >
-              {`# ${channel.name}`}
+              {`# ${channels.byId[id].name}`}
             </Button>
 
-            <Dropdown.Toggle split variant="info" className="mb-1 rounded-0 ml-1" id={`channel-${channel.id}`} />
+            <Dropdown.Toggle split variant="info" className="mb-1 rounded-0 ml-1" id={`channel-${id}`} />
 
             <Dropdown.Menu>
               <Dropdown.Item
-                eventKey={channel.id}
+                eventKey={id}
                 onSelect={this.onSelect}
                 onClick={this.handleShowRenameModal}
               >
                 rename
               </Dropdown.Item>
-              {channel.removable
+              {channels.byId[id].removable
                 && (
                   <Dropdown.Item
-                    eventKey={channel.id}
+                    eventKey={id}
                     onSelect={this.onSelect}
                     onClick={this.handleShowRemoveModal}
                   >
