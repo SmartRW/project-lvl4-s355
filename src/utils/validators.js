@@ -11,15 +11,15 @@ export const checkForAlphaNumeric = value => (value && /[^a-zA-Z0-9 ]/i.test(val
 );
 
 export const checkForUniqueName = memoize(
-  channels => name => (channels.allIds
-    .find(id => channels.byId[id].name === name.trim())
+  channels => name => (Object.values(channels)
+    .find(channel => channel.name === name.trim())
     ? 'name must be unique'
     : null),
 );
 
 export const checkForUniqueOrCurrentName = memoize(
-  (channels, currentName) => name => (channels.allIds
-    .find(id => channels.byId[id].name === name.trim() && currentName !== name.trim())
+  (channels, currentName) => name => (Object.values(channels)
+    .find(channel => channel.name === name.trim() && currentName !== name.trim())
     ? 'name must be unique'
     : null),
 );

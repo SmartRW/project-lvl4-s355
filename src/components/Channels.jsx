@@ -25,8 +25,8 @@ const mapStateToProps = ({
   channelRenamingSucceeded,
   channelRemovalSucceeded,
   initialValues: {
-    channelNewName: channels.byId[currentlyEditedChannelId]
-      ? channels.byId[currentlyEditedChannelId].name
+    channelNewName: channels[currentlyEditedChannelId]
+      ? channels[currentlyEditedChannelId].name
       : null,
   },
 });
@@ -168,7 +168,7 @@ class Channels extends React.Component {
             <Modal.Footer />
           </Modal>
         )}
-        {channels.allIds.map(id => (
+        {Object.values(channels).map(({ id, name, removable }) => (
           <Dropdown key={id} className="d-flex">
             <Button
               variant="info"
@@ -183,7 +183,7 @@ class Channels extends React.Component {
                 'font-weight-bolder': currentChannelId === id,
               })}
             >
-              {`# ${channels.byId[id].name}`}
+              {`# ${name}`}
             </Button>
 
             <Dropdown.Toggle split variant="info" className="mb-1 rounded-0 ml-1" id={`channel-${id}`} />
@@ -196,7 +196,7 @@ class Channels extends React.Component {
               >
                 rename
               </Dropdown.Item>
-              {channels.byId[id].removable
+              {removable
                 && (
                   <Dropdown.Item
                     eventKey={id}

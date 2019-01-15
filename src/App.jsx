@@ -27,25 +27,14 @@ const normalizeInitialData = (data) => {
   const { channels, messages } = data;
   return {
     ...data,
-    channels: {
-      byId: channels.reduce((acc, { id, name, removable }) => ({
-        ...acc,
-        [id]: { name, removable },
-      }), {}),
-      allIds: channels.map(channel => channel.id),
-    },
-    messages: {
-      byId: messages.reduce((acc, {
-        id,
-        channelId,
-        userName,
-        message,
-      }) => ({
-        ...acc,
-        [id]: { channelId, userName, message },
-      }), {}),
-      allIds: messages.map(message => message.id),
-    },
+    channels: channels.reduce((acc, channel) => ({
+      ...acc,
+      [channel.id]: channel,
+    }), {}),
+    messages: messages.reduce((acc, message) => ({
+      ...acc,
+      [message.id]: message,
+    }), {}),
   };
 };
 
