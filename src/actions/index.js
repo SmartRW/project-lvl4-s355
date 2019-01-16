@@ -2,6 +2,8 @@ import { createAction } from 'redux-actions';
 import axios from 'axios';
 import routes from '../utils/routes';
 
+const DEFAULT_CHANNEL_ID = 1;
+
 export const switchCurrentChannelId = createAction('CHANNEL_SWITCH');
 
 export const setCurrentlyEditedChannelId = createAction('CURRENTLY_EDITED_CHANNEL_ID_SET');
@@ -60,7 +62,7 @@ const editingChannelActions = {
   removeChannel: {
     getPayload: ({ channelId }) => [routes.getChannelUrl(channelId)],
     action: axios.delete,
-    postAction: switchCurrentChannelId({ newChannelId: 1 }),
+    postAction: switchCurrentChannelId({ newChannelId: DEFAULT_CHANNEL_ID }),
   },
 };
 
