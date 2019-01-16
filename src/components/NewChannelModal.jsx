@@ -10,9 +10,9 @@ import {
   checkForMaxLength,
 } from '../utils/validators';
 
-const mapStateToProps = ({ channels, channelAddingSucceeded }) => ({
+const mapStateToProps = ({ channels, channelEditingState }) => ({
   channels,
-  channelAddingSucceeded,
+  channelEditingState,
 });
 
 @connect(mapStateToProps)
@@ -32,14 +32,16 @@ class NewChannelModal extends React.Component {
   };
 
   handleClose = () => {
-    const { reset } = this.props;
-    this.setState({ showModal: false });
-    reset();
+    const { reset, channelEditingState } = this.props;
+    if (channelEditingState !== 'requesting') {
+      this.setState({ showModal: false });
+      reset();
+    }
   };
 
   addChannel = async ({ newChannelName }) => {
-    const { addChannel } = this.props;
-    await addChannel({ newChannelName, closeModal: this.handleClose });
+    const { editChannel } = this.props;
+    await editChannel({ type: 'addChannel', data: { newChannelName }, closeModal: this.handleClose });
   }
 
   renderInput = ({ input, meta: { touched, error } }) => {
@@ -57,7 +59,7 @@ class NewChannelModal extends React.Component {
     const {
       handleSubmit,
       submitting,
-      channelAddingSucceeded,
+      channelEditingState,
       channels,
     } = this.props;
     return (
@@ -87,7 +89,7 @@ class NewChannelModal extends React.Component {
                       checkForUniqueName(channels),
                     ]}
                   />
-                  {!channelAddingSucceeded && <small className="form-text text-mute text-danger">Network error</small>}
+                  {channelEditingState === 'failure' && <small className="form-text text-mute text-danger">Network error</small>}
                 </div>
                 <button className="btn btn-outline-primary ml-auto" disabled={submitting} type="submit">add</button>
               </form>

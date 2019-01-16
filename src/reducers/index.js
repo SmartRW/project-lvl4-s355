@@ -40,20 +40,11 @@ const channels = handleActions({
   [actions.removalChannel]: (state, { payload: { id } }) => omit(state, id),
 }, {});
 
-const channelAddingSucceeded = handleActions({
-  [actions.channelAddingSuccess]: () => true,
-  [actions.channelAddingFailure]: () => false,
-}, true);
-
-const channelRenamingSucceeded = handleActions({
-  [actions.channelRenamingSuccess]: () => true,
-  [actions.channelRenamingFailure]: () => false,
-}, true);
-
-const channelRemovalSucceeded = handleActions({
-  [actions.channelRemovalSuccess]: () => true,
-  [actions.channelRemovalFailure]: () => false,
-}, true);
+const channelEditingState = handleActions({
+  [actions.editChannelRequest]: () => 'requesting',
+  [actions.editChannelSuccess]: () => 'success',
+  [actions.editChannelFailure]: () => 'failure',
+}, 'none');
 
 export default combineReducers({
   channels,
@@ -61,9 +52,7 @@ export default combineReducers({
   currentChannelId,
   currentUser: (state = {}) => state,
   messageAddingSucceeded,
-  channelAddingSucceeded,
-  channelRenamingSucceeded,
-  channelRemovalSucceeded,
+  channelEditingState,
   currentlyEditedChannelId,
   form: formReducer,
 });

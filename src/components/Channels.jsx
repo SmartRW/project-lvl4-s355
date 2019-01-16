@@ -16,14 +16,12 @@ const mapStateToProps = ({
   channels,
   currentChannelId,
   currentlyEditedChannelId,
-  channelRenamingSucceeded,
-  channelRemovalSucceeded,
+  channelEditingState,
 }) => ({
   channels,
   currentChannelId,
   currentlyEditedChannelId,
-  channelRenamingSucceeded,
-  channelRemovalSucceeded,
+  channelEditingState,
   initialValues: {
     channelNewName: channels[currentlyEditedChannelId]
       ? channels[currentlyEditedChannelId].name
@@ -62,10 +60,12 @@ class Channels extends React.Component {
   }
 
   handleCloseRenameModal = () => {
-    const { reset, resetCurrentlyEditedChannelId } = this.props;
-    this.setState({ showRenameChannelModal: false });
-    resetCurrentlyEditedChannelId();
-    reset();
+    const { reset, resetCurrentlyEditedChannelId, channelEditingState } = this.props;
+    if (channelEditingState !== 'requesting') {
+      this.setState({ showRenameChannelModal: false });
+      resetCurrentlyEditedChannelId();
+      reset();
+    }
   };
 
   handleShowRemoveModal = () => {
@@ -73,24 +73,27 @@ class Channels extends React.Component {
   }
 
   handleCloseRemoveModal = () => {
-    const { resetCurrentlyEditedChannelId } = this.props;
-    this.setState({ showRemoveChannelModal: false });
-    resetCurrentlyEditedChannelId();
+    const { resetCurrentlyEditedChannelId, channelEditingState } = this.props;
+    if (channelEditingState !== 'requesting') {
+      this.setState({ showRemoveChannelModal: false });
+      resetCurrentlyEditedChannelId();
+    }
   }
 
   renameChannel = async ({ channelNewName }) => {
-    const { renameChannel, currentlyEditedChannelId } = this.props;
-    await renameChannel({
-      channelNewName,
-      channelId: currentlyEditedChannelId,
+    const { editChannel, currentlyEditedChannelId } = this.props;
+    await editChannel({
+      type: 'renameChannel',
+      data: { channelNewName, channelId: currentlyEditedChannelId },
       closeModal: this.handleCloseRenameModal,
     });
   }
 
   removeChannel = async () => {
-    const { removeChannel, currentlyEditedChannelId } = this.props;
-    await removeChannel({
-      channelId: currentlyEditedChannelId,
+    const { editChannel, currentlyEditedChannelId } = this.props;
+    await editChannel({
+      type: 'removeChannel',
+      data: { channelId: currentlyEditedChannelId },
       closeModal: this.handleCloseRemoveModal,
     });
   }
@@ -112,8 +115,7 @@ class Channels extends React.Component {
       currentChannelId,
       handleSubmit,
       submitting,
-      channelRenamingSucceeded,
-      channelRemovalSucceeded,
+      channelEditingState,
       initialValues: { channelNewName },
     } = this.props;
 
@@ -140,7 +142,7 @@ class Channels extends React.Component {
                       checkForUniqueOrCurrentName(channels, channelNewName),
                     ]}
                   />
-                  {!channelRenamingSucceeded && <small className="form-text text-mute text-danger">Network error</small>}
+                  {channelEditingState === 'failure' && <small className="form-text text-mute text-danger">Network error</small>}
                 </div>
                 <button className="btn btn-outline-primary ml-auto" disabled={submitting} type="submit">add</button>
               </form>
@@ -158,10 +160,10 @@ class Channels extends React.Component {
             </Modal.Header>
 
             <Modal.Body>
-              {!channelRemovalSucceeded && <small className="form-text text-mute text-danger">Network error</small>}
+              {channelEditingState === 'failure' && <small className="form-text text-mute text-danger">Network error</small>}
               <div className="d-flex">
-                <button className="btn btn-outline-secondary mr-auto" onClick={this.handleCloseRemoveModal} disabled={submitting} type="button">please dont</button>
-                <button className="btn btn-outline-primary" onClick={this.removeChannel} disabled={submitting} type="button">kill it</button>
+                <button className="btn btn-outline-secondary mr-auto" onClick={this.handleCloseRemoveModal} disabled={submitting || channelEditingState === 'requesting'} type="button">please dont</button>
+                <button className="btn btn-outline-primary" onClick={this.removeChannel} disabled={submitting || channelEditingState === 'requesting'} type="button">kill it</button>
               </div>
             </Modal.Body>
 

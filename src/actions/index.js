@@ -2,8 +2,6 @@ import { createAction } from 'redux-actions';
 import axios from 'axios';
 import routes from '../utils/routes';
 
-const DEFAULT_CHANNEL_ID = 1;
-
 export const switchCurrentChannelId = createAction('CHANNEL_SWITCH');
 
 export const setCurrentlyEditedChannelId = createAction('CURRENTLY_EDITED_CHANNEL_ID_SET');
@@ -37,52 +35,47 @@ export const addMessage = ({
 };
 
 export const addingChannel = createAction('CHANNEL_ADD');
-export const channelAddingSuccess = createAction('CHANNEL_ADD_SUCCESS');
-export const channelAddingFailure = createAction('CHANNEL_ADD_FAILURE');
-
-export const addChannel = ({ newChannelName, closeModal }) => async (dispatch) => {
-  const url = routes.getChannelsUrl();
-  const data = { attributes: { name: newChannelName.trim() } };
-  try {
-    await axios.post(url, { data });
-    closeModal();
-    dispatch(channelAddingSuccess());
-  } catch (e) {
-    dispatch(channelAddingFailure());
-    console.error(e);
-  }
-};
-
 export const renamingChannel = createAction('CHANNEL_RENAME');
-export const channelRenamingSuccess = createAction('CHANNEL_RENAME_SUCCESS');
-export const channelRenamingFailure = createAction('CHANNEL_RENAME_FAILURE');
+export const removalChannel = createAction('CHANNEL_REMOVE');
 
-export const renameChannel = ({ channelNewName, channelId, closeModal }) => async (dispatch) => {
-  const url = routes.getChannelUrl(channelId);
-  const data = { attributes: { name: channelNewName.trim() } };
-  try {
-    await axios.patch(url, { data });
-    closeModal();
-    dispatch(channelRenamingSuccess());
-  } catch (e) {
-    dispatch(channelRenamingFailure());
-    console.error(e);
-  }
+export const editChannelRequest = createAction('CHANNEL_EDIT_REQUEST');
+export const editChannelSuccess = createAction('CHANNEL_EDIT_SUCCESS');
+export const editChannelFailure = createAction('CHANNEL_EDIT_FAILURE');
+
+const editingChannelActions = {
+  addChannel: {
+    getPayload: ({ newChannelName }) => [
+      routes.getChannelsUrl(),
+      { data: { attributes: { name: newChannelName.trim() } } },
+    ],
+    action: axios.post,
+  },
+  renameChannel: {
+    getPayload: ({ channelNewName, channelId }) => [
+      routes.getChannelUrl(channelId),
+      { data: { attributes: { name: channelNewName.trim() } } },
+    ],
+    action: axios.patch,
+  },
+  removeChannel: {
+    getPayload: ({ channelId }) => [routes.getChannelUrl(channelId)],
+    action: axios.delete,
+    postAction: switchCurrentChannelId({ newChannelId: 1 }),
+  },
 };
 
-export const removalChannel = createAction('CHANNEL_REMOVE');
-export const channelRemovalSuccess = createAction('CHANNEL_REMOVE_SUCCESS');
-export const channelRemovalFailure = createAction('CHANNEL_REMOVE_FAILURE');
-
-export const removeChannel = ({ channelId, closeModal }) => async (dispatch) => {
-  const url = routes.getChannelUrl(channelId);
+export const editChannel = ({ type, data, closeModal }) => async (dispatch) => {
+  const { getPayload, action, postAction } = editingChannelActions[type];
   try {
-    await axios.delete(url);
-    dispatch(switchCurrentChannelId({ newChannelId: DEFAULT_CHANNEL_ID }));
+    dispatch(editChannelRequest());
+    await action(...getPayload(data));
+    dispatch(editChannelSuccess());
     closeModal();
-    dispatch(channelRemovalSuccess);
+    if (postAction) {
+      dispatch(postAction);
+    }
   } catch (e) {
-    dispatch(channelRemovalFailure);
+    dispatch(editChannelFailure());
     console.error(e);
   }
 };
