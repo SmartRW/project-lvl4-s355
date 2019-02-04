@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import Router from 'koa-router';
+import cookies from 'cookie';
 
 const getNextId = () => Number(_.uniqueId());
 
@@ -7,6 +8,7 @@ export default (router, io) => {
   const generalChannelId = getNextId();
   const randomChannelId = getNextId();
   const defaultState = {
+    users: [],
     channels: [
       { id: generalChannelId, name: 'general', removable: false },
       { id: randomChannelId, name: 'random', removable: false },
@@ -16,6 +18,17 @@ export default (router, io) => {
   };
 
   const state = { ...defaultState };
+
+  io.on('connection', (socket) => {
+    const { handshake: { headers: { cookie } } } = socket;
+    const data = { id: getNextId(), userName: cookies.parse(cookie).userName };
+    state.users.push(data);
+    io.emit('userConnected', { data });
+    socket.on('disconnect', () => {
+      state.users = state.users.filter(({ id }) => id !== data.id);
+      io.emit('userDisconnected', { data });
+    });
+  });
 
   const apiRouter = new Router();
   apiRouter
@@ -89,6 +102,7 @@ export default (router, io) => {
         channelId: Number(ctx.params.channelId),
         id: getNextId(),
       };
+      console.dir(message);
       state.messages.push(message);
       ctx.status = 201;
       const data = {

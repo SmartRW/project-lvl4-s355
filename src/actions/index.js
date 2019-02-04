@@ -4,6 +4,10 @@ import routes from '../utils/routes';
 
 const DEFAULT_CHANNEL_ID = 1;
 
+export const addUser = createAction('USER_ADD');
+
+export const deleteUser = createAction('USER_DELETE');
+
 export const switchCurrentChannelId = createAction('CHANNEL_SWITCH');
 
 export const setCurrentlyEditedChannelId = createAction('CURRENTLY_EDITED_CHANNEL_ID_SET');

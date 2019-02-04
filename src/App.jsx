@@ -24,9 +24,13 @@ const getUserName = () => {
 };
 
 const normalizeInitialData = (data) => {
-  const { channels, messages } = data;
+  const { users, channels, messages } = data;
   return {
     ...data,
+    users: users.reduce((acc, user) => ({
+      ...acc,
+      [user.id]: user,
+    }), {}),
     channels: channels.reduce((acc, channel) => ({
       ...acc,
       [channel.id]: channel,
@@ -57,6 +61,8 @@ export default (initialData) => {
     store.dispatch(actions.removalChannel(data));
     store.dispatch(actions.removalMessages(data));
   });
+  socket.on('userConnected', ({ data }) => store.dispatch(actions.addUser(data)));
+  socket.on('userDisconnected', ({ data }) => store.dispatch(actions.deleteUser(data)));
 
   render(
     <Provider store={store}>

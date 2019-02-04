@@ -61,6 +61,7 @@ export default () => {
   const io = socket(server);
 
   addRoutes(router, io);
+
   app.use(router.allowedMethods());
   app.use(router.routes());
 

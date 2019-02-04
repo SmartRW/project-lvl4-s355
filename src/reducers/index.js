@@ -6,6 +6,14 @@ import * as actions from '../actions';
 
 const DEFAULT_CHANNEL_ID = 1;
 
+const users = handleActions({
+  [actions.addUser]: (state, { payload: { id, userName } }) => ({
+    ...state,
+    [id]: { id, userName },
+  }),
+  [actions.deleteUser]: (state, { payload: { id } }) => omit(state, id),
+}, {});
+
 const messages = handleActions({
   [actions.addingMessage]: (state, { payload: { attributes } }) => {
     const { id } = attributes;
@@ -49,6 +57,7 @@ const channelEditingState = handleActions({
 export default combineReducers({
   channels,
   messages,
+  users,
   currentChannelId,
   currentUser: (state = {}) => state,
   messageAddingSucceeded,
